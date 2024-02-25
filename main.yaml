@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - 'content/transcribe.html'
-      - 'content/transcribe.js'
       - 'server/**'
 
 jobs:
