@@ -1,0 +1,29 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    # Inject the API Key into your JavaScript file
+    - name: Inject API Key
+      run: |
+        sed -i "s/{MY_SECRET}/${{ secrets.MY_SECRET }}/g" path/to/your/script.js
+      env:
+        MY_SECRET: ${{ secrets.MY_SECRET }}
+
+    # Add steps to build your project here
+    # For example, if you're using a static site generator
+
+    # If you're deploying to GitHub Pages, use an action like this:
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./your_site_directory
