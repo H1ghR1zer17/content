@@ -1,7 +1,7 @@
 document.getElementById('submit-button').addEventListener('click', function() {
             const fileInput = document.getElementById('file-upload');
             const file = fileInput.files[0];
-            const apiKey = '${ MY_SECRET }';
+            const apiKey = '${MY_SECRET}';
             if (!file) {
                 alert('Please select a file.');
                 return;
