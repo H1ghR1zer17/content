@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sugarbear's Notes Assistant</title>
+    <style>
+        body {
+            background-color: #e1ffce; /* Light green background */
+            margin: 0.5in; /* 1/2 inch margin around the entire body */
+            font-family: Arial, sans-serif; /* Optional: Sets a default font */
+        }
+        #display-window {
+            width: calc(100% - 1in); /* Adjust width to account for body margin */
+            height: 400px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            overflow: auto; /* Shows a scrollbar when content is long */
+            background-color: white; /* Output area remains white */
+            padding: 10px; /* Optional: Adds some padding inside the display window */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        input, button {
+            display: block; /* Makes input and button block level for full width */
+            margin: 10px auto; /* Centers the button and input and adds space between them */
+            padding: 10px; /* Adds some padding for better appearance */
+            box-sizing: border-box; /* Include padding and border */
+        }
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            cursor: pointer; /* Changes cursor to pointer on hover */
+            width: auto; /* Auto width based on content */
+            padding: 10px 20px; /* Adjusts padding */
+        }
+        button:hover {
+            background-color: #45a049; /* Darker shade of green on hover */
+        }
+    </style>
+    </head>
+<body>
+    <h1>Sugar Bear's Notes Assistant</h1>
+    <input type="file" id="file-upload" />
+    <p></p>
+    <div align="center">
+        <button id="submit-button" class="full-width-button">Generate Text</button>
+</div>
+    <!-- Clear button added -->
+    <div id="display-window" style="width: 100%; height: 750px; border: 1px solid #ccc; margin-top: 20px; overflow: auto;">
+    <span style="color: lightgrey;">Your notes will be displayed here. Choose File and click 'Generate Text'</span>
+    </div>
+    <p></p>
+    <div align="center">
+        <button id="clear-button">Clear Content</button>
+    </div> 
+    <script>
+        document.getElementById('submit-button').addEventListener('click', function() {
+            const fileInput = document.getElementById('file-upload');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+              // Display loading message
+            document.getElementById('display-window').textContent = 'Generating audio-to-text content...';
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('model', 'whisper-1');
+            formData.append('type', 'text');
+            fetch('https://api.openai.com/v1/audio/transcriptions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer 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',
+                },
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Now send the text to GPT-4-turbo-preview for post-processing
+                const textContent = data.text;
+                return fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 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',
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4-turbo-preview",
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are a speech-to-text post-processing assistant. Your task is to organize the output to class notes format. Since the display is in HTML,  replace  '**' and '###'' with appropriate HTML-formatting equivalent."
+                            },
+                            {
+                                role: "user",
+                                content: textContent
+                            }
+                        ]
+                    }),
+                });
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Assuming the GPT-4-turbo-preview response is structured with the result in the last message
+                const organizedNotes = data.choices[0].message.content; // Adjust according to actual response structure
+                document.getElementById('display-window').innerHTML = organizedNotes;
+            })
+            .catch(error => {
+                console.error('There was an error:', error);
+            });
+        });
+        document.getElementById('clear-button').addEventListener('click', function() {
+            document.getElementById('display-window').textContent = 'Cleared';
+        });
+    </script>
+    
+</body>
+</html>
