@@ -1,7 +1,7 @@
 document.getElementById('submit-button').addEventListener('click', function() {
             const fileInput = document.getElementById('file-upload');
             const file = fileInput.files[0];
-            const apiKey = '{MY_SECRET}';
+            const apiKey = '${ MY_SECRET }';
             if (!file) {
                 alert('Please select a file.');
                 return;
@@ -15,7 +15,7 @@ document.getElementById('submit-button').addEventListener('click', function() {
             fetch('https://api.openai.com/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ${MY_SECRET}',
+                    'Authorization': 'Bearer ${apiKey}',
                 },
                 body: formData,
             })
@@ -27,7 +27,7 @@ document.getElementById('submit-button').addEventListener('click', function() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ${secrets.MY_SECRET}',
+                        'Authorization': 'Bearer ${apiKey}',
                     },
                     body: JSON.stringify({
                         model: "gpt-4-turbo-preview",
