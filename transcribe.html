@@ -75,7 +75,7 @@
             fetch('https://api.openai.com/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ${MY_SECRET}',
+                    'Authorization': 'Bearer ${secrets.MY_SECRET}',
                 },
                 body: formData,
             })
@@ -87,7 +87,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ${MY_SECRET}',
+                        'Authorization': 'Bearer ${secrets.MY_SECRET}',
                     },
                     body: JSON.stringify({
                         model: "gpt-4-turbo-preview",
