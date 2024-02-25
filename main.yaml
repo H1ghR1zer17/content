@@ -1,24 +1,31 @@
-name: Deploy Website
+name: Deploy Application
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'content/transcribe.html'
       - 'content/transcribe.js'
+      - 'server/**'
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    # Add steps for any build process you have
-    # - name: Build project
-    #   run: build-command
+      - name: Install Dependencies
+        run: npm install
 
-    # Example placeholder for deployment step
-    - name: Deploy to Server
-      run: echo "Replace this with your deployment commands"
-      env:
-        API_KEY: ${{ secrets.MY_SECRET }}
+      - name: Build and Deploy
+        run: |
+          npm run build
+          npm run deploy
+        env:
+          API_KEY: ${{ secrets.MY_SECRET }}
