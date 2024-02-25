@@ -29,4 +29,5 @@ jobs:
     - name: Deploy
       run: npm run deploy # Customize this to your deployment method
       env:
-        MY_SECRET: ${{ secrets.MY_SECRET }} # Ensure your deployment method uses this env
+        MY_SECRET: ${{ secrets.MY_SECRET }} 
+        # Ensure your deployment method uses this env
