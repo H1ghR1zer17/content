@@ -1,29 +1,24 @@
-name: Build and Deploy
+name: Deploy Website
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'content/transcribe.html'
+      - 'content/transcribe.js'
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
 
-    # Inject the API Key into your JavaScript file
-    - name: Inject API Key
-      run: |
-        sed -i "s/{MY_SECRET}/${{ secrets.MY_SECRET }}/g" path/to/your/script.js
+    # Add steps for any build process you have
+    # - name: Build project
+    #   run: build-command
+
+    # Example placeholder for deployment step
+    - name: Deploy to Server
+      run: echo "Replace this with your deployment commands"
       env:
-        MY_SECRET: ${{ secrets.MY_SECRET }}
-
-    # Add steps to build your project here
-    # For example, if you're using a static site generator
-
-    # If you're deploying to GitHub Pages, use an action like this:
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./content
+        API_KEY: ${{ secrets.MY_SECRET }}
